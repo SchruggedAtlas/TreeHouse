@@ -76,6 +76,7 @@ function QuadTree:subdivide()
   local new_x
   local new_y
 
+  print("Subdividing...")
   new_width = self.boundary.half_width
   new_height = self.boundary.half_height
   -- Create northeast child
@@ -120,4 +121,20 @@ function QuadTree:query(boundary)
   points_in_range = self:catenate_table(points_in_range,self.se:query(boundary))
 
   return points_in_range
+end
+
+function QuadTree:draw()
+  -- Draw this quadtree
+  love.graphics.setColor(0, 1, 0, .6)
+  love.graphics.rectangle("line",self.boundary.center.x-self.boundary.half_width,
+                                 self.boundary.center.y-self.boundary.half_height,
+                                 self.boundary.half_width*2,
+                                 self.boundary.half_height*2)
+  -- Draw children
+  if(self.nw ~= nil) then
+    self.nw:draw()
+    self.ne:draw()
+    self.sw:draw()
+    self.se:draw()
+  end
 end
