@@ -11,7 +11,9 @@ function love.load()
   point_x = 0
   point_y = 0
   total_time = 0
-  treehouse = get_quadtree(screen_w/2,screen_h/2,screen_w,screen_h)
+  top_layer = 1
+  treehouse = get_quadtree(screen_w/2,screen_h/2,screen_w,screen_h,top_layer)
+  --add_random_points(math.pow(4,3))
   print(tostring(screen_w)..":"..tostring(screen_h))
   --test_boundary()
   --test_quadtree()
@@ -91,12 +93,21 @@ function get_boundary(p,w,h)
   return b
 end
 
-function get_quadtree(x,y,w,h)
+function get_quadtree(x,y,w,h,l)
   local pt = get_point(x,y)
   local b = get_boundary(pt,w,h)
   local q = QuadTree()
-  q:init(b)
+  q:init(b,l)
   return q
+end
+
+function add_random_points(n)
+  for i=1,n,1 do
+    local x = love.math.random(0,screen_w)
+    local y = love.math.random(0,screen_h)
+    local p = get_point(x,y)
+    treehouse:insert(p)
+  end
 end
 
 function add_point(x,y)
@@ -105,14 +116,6 @@ function add_point(x,y)
   treehouse:insert(p)
 end
 
-function draw_points()
-  love.graphics.setColor(1, 0.47, 0, 1)
-  for _,pt in ipairs(points) do
-    love.graphics.circle("fill", pt.x, pt.y, 3, 50)
-  end
-end
-
 function love.draw()
-  draw_points()
   treehouse:draw()
 end

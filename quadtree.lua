@@ -8,8 +8,9 @@ QuadTree = class(
   end
 )
 
-function QuadTree:init(boundary)
+function QuadTree:init(boundary,layer)
   self.node_capacity = 4
+  self.layer = layer
   self.boundary = boundary
   self.points = {}
   self.ne = nil
@@ -66,7 +67,7 @@ function QuadTree:spawn_child(new_width,new_height,new_x,new_y)
   new_boundary = Boundary()
   new_boundary:init(new_center,new_width,new_height)
   new_child = QuadTree()
-  new_child:init(new_boundary)
+  new_child:init(new_boundary,self.layer+1)
   return new_child
 end
 
@@ -130,6 +131,10 @@ function QuadTree:draw()
                                  self.boundary.center.y-self.boundary.half_height,
                                  self.boundary.half_width*2,
                                  self.boundary.half_height*2)
+  for index, p in ipairs(self.points) do
+    love.graphics.setColor(colors[self.layer], 0.47, 0, 1)
+    love.graphics.circle("fill", p.x, p.y, 3, 50)
+  end
   -- Draw children
   if(self.nw ~= nil) then
     self.nw:draw()
